@@ -49,46 +49,44 @@ public class Day17 {
         Set<String> tempPoints = activePoints;
         
         for (int i = 0; i < 6; i++) {
-            tempPoints = runCycle(tempPoints);
+            tempPoints = runCyclePartOne(tempPoints);
         }
         
         System.out.println("Part one: " + tempPoints.size());
+        
+        // Part two
+        activePoints = new HashSet<>();
+        
+        // Initialize pocket dimension
+        for (int y = 0; y < cubeInitList.size(); y++) {
+            String rowData = cubeInitList.get(y);
+            
+            for (int x = 0; x < rowData.length(); x++) {
+                if (rowData.charAt(x) == '#') {
+                    activePoints.add(generatePoint(x, y, 0, 0));
+                }
+            }
+        }
+        
+        // Run the cycles
+        tempPoints = activePoints;
+        
+        for (int i = 0; i < 6; i++) {
+            tempPoints = runCyclePartTwo(tempPoints);
+        }
+        
+        System.out.println("Part two: " + tempPoints.size());
     }
 
     private static String generatePoint(int x, int y, int z) {
         return String.format("%05d,%05d,%05d", x, y, z);
     }
     
-    private static final int[][] NEIGHBOURS = new int[][] {
-        { -1, -1, -1 },
-        { -1, -1, 0 },
-        { -1, -1, 1 },
-        { -1, 0, -1 },
-        { -1, 0, 0 },
-        { -1, 0, 1 },
-        { -1, 1, -1 },
-        { -1, 1, 0 },
-        { -1, 1, 1 },
-        { 0, -1, -1 },
-        { 0, -1, 0 },
-        { 0, -1, 1 },
-        { 0, 0, -1 },
-        { 0, 0, 1 },
-        { 0, 1, -1 },
-        { 0, 1, 0 },
-        { 0, 1, 1 },
-        { 1, -1, -1 },
-        { 1, -1, 0 },
-        { 1, -1, 1 },
-        { 1, 0, -1 },
-        { 1, 0, 0 },
-        { 1, 0, 1 },
-        { 1, 1, -1 },
-        { 1, 1, 0 },
-        { 1, 1, 1 },
-    };
+    private static String generatePoint(int x, int y, int z, int w) {
+        return String.format("%05d,%05d,%05d,%05d", x, y, z, w);
+    }
     
-    private static Set<String> runCycle(Set<String> inputSet) {
+    private static Set<String> runCyclePartOne(Set<String> inputSet) {
         Set<String> outputSet = new HashSet<>();
         Set<String> inactiveProcessingSet = new HashSet<>();
 
@@ -101,18 +99,28 @@ public class Day17 {
             int activeNeighbours = 0;
             
             // Let's examine every neighbour
-            for (int i = 0; i < NEIGHBOURS.length; i++) {
-                int nX = x + NEIGHBOURS[i][0];
-                int nY = y + NEIGHBOURS[i][1];
-                int nZ = z + NEIGHBOURS[i][2];
-                String neighbourCoords = generatePoint(nX, nY, nZ);
+            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
+                int nX = x + nXdiff;
                 
-                if (inputSet.contains(neighbourCoords)) {
-                    // active neighbour
-                    activeNeighbours++;
-                } else {
-                    // An inactive point next to an active point - we'll have to check this later
-                    inactiveProcessingSet.add(neighbourCoords);
+                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
+                    int nY = y + nYdiff;
+                    
+                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
+                        if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0) {
+                            continue;
+                        }
+                        
+                        int nZ = z + nZdiff;
+                        String neighbourCoords = generatePoint(nX, nY, nZ);
+                        
+                        if (inputSet.contains(neighbourCoords)) {
+                            // active neighbour
+                            activeNeighbours++;
+                        } else {
+                            // An inactive point next to an active point - we'll have to check this later
+                            inactiveProcessingSet.add(neighbourCoords);
+                        }
+                    }
                 }
             }
             
@@ -132,14 +140,141 @@ public class Day17 {
             int activeNeighbours = 0;
             
             // Let's examine every neighbour
-            for (int i = 0; i < NEIGHBOURS.length; i++) {
-                int nX = x + NEIGHBOURS[i][0];
-                int nY = y + NEIGHBOURS[i][1];
-                int nZ = z + NEIGHBOURS[i][2];
-                String neighbourPoint = generatePoint(nX, nY, nZ);
+            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
+                int nX = x + nXdiff;
                 
-                if (inputSet.contains(neighbourPoint)) {
-                    activeNeighbours++;
+                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
+                    int nY = y + nYdiff;
+                    
+                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
+                        if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0) {
+                            continue;
+                        }
+                        
+                        int nZ = z + nZdiff;
+                        String neighbourCoords = generatePoint(nX, nY, nZ);
+                        
+                        if (inputSet.contains(neighbourCoords)) {
+                            // active neighbour
+                            activeNeighbours++;
+                        }
+                    }
+                }
+            }
+            
+            if (activeNeighbours == 3) {
+                // Inactive point becomes active
+                outputSet.add(point);
+            }
+        }
+        
+        return outputSet;
+    }
+    
+    private static Set<String> runCyclePartTwo(Set<String> inputSet) {
+        Set<String> outputSet = new HashSet<>();
+        Set<String> inactiveProcessingSet = new HashSet<>();
+
+        // Start by examining every active point
+        for (String pointCoords : inputSet) {
+            String[] coords = pointCoords.split(",");
+            int x = Integer.valueOf(coords[0]);
+            int y = Integer.valueOf(coords[1]);
+            int z = Integer.valueOf(coords[2]);
+            int w = Integer.valueOf(coords[3]);
+            int activeNeighbours = 0;
+            
+            // Let's examine every neighbour
+            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
+                int nX = x + nXdiff;
+                
+                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
+                    int nY = y + nYdiff;
+                    
+                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
+                        int nZ = z + nZdiff;
+                        
+                        for (int nWdiff = -1; nWdiff <= 1; nWdiff++) {
+                            if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0 && nWdiff == 0) {
+                                continue;
+                            }
+                            
+                            int nW = w + nWdiff;
+                            String neighbourCoords = generatePoint(nX, nY, nZ, nW);
+                            
+                            if (inputSet.contains(neighbourCoords)) {
+                                // active neighbour
+                                activeNeighbours++;
+                            } else {
+                                // An inactive point next to an active point - we'll have to check this later
+                                inactiveProcessingSet.add(neighbourCoords);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // If active and there are 2 or 3 neighbours, it stays active in the new version
+            // Otherwise, it flips to inactive, so we will not add it to the output set
+            if (activeNeighbours == 2 || activeNeighbours == 3) {
+                outputSet.add(pointCoords);
+            }
+        }
+        
+        // Now we look at all of the inactive points that have at least one active neighbour
+        for (String point : inactiveProcessingSet) {
+            String[] coords = point.split(",");
+            int x = Integer.valueOf(coords[0]);
+            int y = Integer.valueOf(coords[1]);
+            int z = Integer.valueOf(coords[2]);
+            int w = Integer.valueOf(coords[3]);
+            int activeNeighbours = 0;
+            
+            // Let's examine every neighbour
+//            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
+//                int nX = x + nXdiff;
+//                
+//                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
+//                    int nY = y + nYdiff;
+//                    
+//                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
+//                        if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0) {
+//                            continue;
+//                        }
+//                        
+//                        int nZ = z + nZdiff;
+//                        String neighbourCoords = generatePoint(nX, nY, nZ);
+//                        
+//                        if (inputSet.contains(neighbourCoords)) {
+//                            // active neighbour
+//                            activeNeighbours++;
+//                        }
+//                    }
+//                }
+//            }
+            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
+                int nX = x + nXdiff;
+                
+                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
+                    int nY = y + nYdiff;
+                    
+                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
+                        int nZ = z + nZdiff;
+                        
+                        for (int nWdiff = -1; nWdiff <= 1; nWdiff++) {
+                            if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0 && nWdiff == 0) {
+                                continue;
+                            }
+                            
+                            int nW = w + nWdiff;
+                            String neighbourCoords = generatePoint(nX, nY, nZ, nW);
+                            
+                            if (inputSet.contains(neighbourCoords)) {
+                                // active neighbour
+                                activeNeighbours++;
+                            }
+                        }
+                    }
                 }
             }
             
