@@ -231,27 +231,6 @@ public class Day17 {
             int activeNeighbours = 0;
             
             // Let's examine every neighbour
-//            for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
-//                int nX = x + nXdiff;
-//                
-//                for (int nYdiff = -1; nYdiff <= 1; nYdiff++) {
-//                    int nY = y + nYdiff;
-//                    
-//                    for (int nZdiff = -1; nZdiff <= 1; nZdiff++) {
-//                        if (nXdiff == 0 && nYdiff == 0 && nZdiff == 0) {
-//                            continue;
-//                        }
-//                        
-//                        int nZ = z + nZdiff;
-//                        String neighbourCoords = generatePoint(nX, nY, nZ);
-//                        
-//                        if (inputSet.contains(neighbourCoords)) {
-//                            // active neighbour
-//                            activeNeighbours++;
-//                        }
-//                    }
-//                }
-//            }
             for (int nXdiff = -1; nXdiff <= 1; nXdiff++) {
                 int nX = x + nXdiff;
                 
