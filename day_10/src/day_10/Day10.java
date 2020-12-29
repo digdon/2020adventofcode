@@ -55,5 +55,34 @@ public class Day10 {
         System.out.println(diffMap);
         
         System.out.println("Part one: " + (diffMap.get(1) * diffMap.get(3)));
+        
+        List<Integer> newAdapterList = new ArrayList<>();
+        newAdapterList.add(0);
+        newAdapterList.addAll(adapterList);
+        int maxJoltage = adapterList.get(adapterList.size() - 1) + 3;
+        newAdapterList.add(maxJoltage);
+
+        System.out.println(newAdapterList);
+        Map<Integer, Long> pathCountMap = new HashMap<>();
+        pathCountMap.put(0, 1L);
+
+        for (Integer adapter : newAdapterList) {
+            for (int diff = 1; diff < 4; diff++) {
+                int nextAdapter = adapter + diff;
+                
+                if (newAdapterList.contains(nextAdapter)) {
+                    Long pathCount = pathCountMap.get(nextAdapter);
+                    
+                    if (pathCount == null) {
+                        pathCount = 0L;
+                    }
+                    
+                    pathCountMap.put(nextAdapter, pathCount + pathCountMap.get(adapter));
+                }
+            }
+        }
+        
+        System.out.println(pathCountMap);
+        System.out.println(pathCountMap.get(maxJoltage));
     }
 }
