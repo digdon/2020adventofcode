@@ -1,3 +1,0 @@
-# Day 24: Lobby Layout
-
-Similar to day 17, but rather than dealing with cubes, we're dealing with hexagons. I wondered if there was a grid/co-ordinate system for hexagons similar to what you'd use for squares/cubes (the standard x/y or x/y/z co-ordinate system). With a bit of searching, I found this: [Hexagon grid coordinate system](https://math.stackexchange.com/questions/2254655/hexagon-grid-coordinate-system). Perfect. Given that the tiles would spread out in every direction, I implemented the cube coordinate mechanism. It might be worth re-working the code to try the axial mechanism...

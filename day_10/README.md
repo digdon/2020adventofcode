@@ -1,5 +1,0 @@
-# Day 10: Adapter Array
-
-Part 1 of this was dirt simple - sort, do the math, add up the differences.
-
-Part 2 was far more complicated. I knew it could be done via a tree structure, but I recognized right away that that would take time and memory and that there was likely a much simpler solution. My gola was to pass through the list of adapters only once. I tried a variety of things, but laziness and being tired of this whole thing caused me to look for inspiration. I found [this post](https://www.reddit.com/r/adventofcode/comments/ka8z8x/2020_day_10_solutions/gfcxuxf/) on Reddit and I couldn't believe how elegant it is. It did exactly what I was looking for. In my erroneous original thinking, from every adapter in the list I was trying to go backwards and forwards looking for diffs to figure out which ones could be removed. This solution shows that you only need to look forward - that greatly simplifies things. The second part I was missing was keep track of the path counts. Kudos to [daggerdragon](https://www.reddit.com/user/daggerdragon/) for an amazing solution.
